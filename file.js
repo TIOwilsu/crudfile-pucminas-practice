@@ -12,7 +12,6 @@ const create = (item) => {
     try{
         const filePath = getPath(file)
         const validate = fs.existsSync(filePath) && hasContent(file)
-        item.createDate = new Date()
         let itemString = JSON.stringify(item)
         var string = `${itemString}`
         if(validate) string = `\r\n${string}`
@@ -23,7 +22,7 @@ const create = (item) => {
     }
 }
 
-const update = ({ id, fields }) => {
+const update = ({ _id, fields }) => {
     try{
         const content = read(file)
         let items = content.split('\r\n')
@@ -31,12 +30,12 @@ const update = ({ id, fields }) => {
         Object.keys(fields).forEach((fKey) => { 
             items.map((item) => {
                 Object.keys(item).forEach((iKey) => {
-                    const validate = item.id === id && fKey === iKey && fields[fKey] !== item[iKey]
+                    const validate = item._id === _id && fKey === iKey && fields[fKey] !== item[iKey]
                     if(validate) item[iKey] = fields[fKey]
                 })
             }) 
         })
-        
+    
         let string = items.map(item => JSON.stringify(item)).join('\r\n')
         fs.writeFileSync(file, string)
         console.log(chalk.bold.green('Usuário atualizado com sucesso!'))
@@ -50,7 +49,7 @@ const remove = (value) => {
         const content = read(file)
         let items = content.split('\r\n')
         let filter = items.map(item => JSON.parse(item)).
-            filter(({ id }) => id !== value).
+            filter(({ _id }) => _id !== value).
             map(item => JSON.stringify(item)).
             join('\r\n')
 

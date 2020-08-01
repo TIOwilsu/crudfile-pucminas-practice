@@ -37,9 +37,11 @@ const commands = [
         command: 'update',
         describe: 'Atualiza um usuário no arquivo.',
         builder: {
-            describe: 'Id do usuário',
-            demandOption: true,
-            type: 'String'
+            id: {
+                describe: 'Id do usuário',
+                demandOption: true,
+                type: 'String'
+            }
         },
         handler: ({ id, name, email, password, gender }) => {
             const request = {
@@ -58,9 +60,11 @@ const commands = [
         command: 'remove',
         describe: 'Remover um usuário no arquivo.',
         builder: {
-            describe: 'Id do usuário',
-            demandOption: true,
-            type: 'String'
+            id:{
+                describe: 'Id do usuário',
+                demandOption: true,
+                type: 'String'
+            }
         },
         handler: ({ id }) =>  {
             file.remove(id) 
@@ -70,8 +74,10 @@ const commands = [
         command: 'get',
         describe: 'Pega todos ou um usuário no arquivo',
         builder: {
-            describe: 'Id do usuário',
-            type: 'String'
+            id: {
+                describe: 'Id do usuário',
+                type: 'String'
+            }  
         },
         handler: ({ id }) =>  {
             file.get(id) 

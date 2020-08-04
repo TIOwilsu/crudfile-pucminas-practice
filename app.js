@@ -1,5 +1,5 @@
 const yargs = require('yargs')
-const commands = require('./commands')
+const commands = require('./helpers/commands')
 
 commands.forEach(command =>  yargs.command(command))
 

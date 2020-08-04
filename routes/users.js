@@ -1,24 +1,24 @@
 const fs = require('fs')
-const path = require('path')
 const chalk = require('chalk')
-const file = 'users.txt'
-
-
-const getPath = (file) => {
-    return path.join(__dirname, file)
-}
+const file = 'users.json'
+const filePath = getPath(file, '../')
+const { replaceAll } = require('../util/string')
+const { getPath, hasFile, hasContent, read } = require('../util/file')
 
 const create = (item) => {
-    try{
-        const filePath = getPath(file)
-        const validate = fs.existsSync(filePath) && hasContent(file)
-        let itemString = JSON.stringify(item)
-        var string = `${itemString}`
-        if(validate) string = `\r\n${string}`
-        fs.appendFileSync(file, string)
+    try{ 
+        const validate = hasFile(filePath) && hasContent(filePath)
+        const find = /},/
+        const replace = '},\r\n'
+        let items = []
+        if (validate) items = get()
+        items.push(item)
+        let str = JSON.stringify(items)
+        let content = replaceAll(str, find, replace)
+        fs.writeFileSync(file, content)
         console.log(chalk.bold.green('Usuário criado com sucesso!'))
-    } catch{
-        console.log(chalk.bold.red('Ouve um problema! Não foi possivel criar um usuario.'))
+    } catch (err){
+        console.log(chalk.bold.red('Ouve um problema! Não foi possivel criar um usuario.', err))
     }
 }
 
@@ -56,10 +56,9 @@ const remove = (value) => {
 }
 
 const get = (id) => {
-    const content = read(file)
-    let items = content.split('\r\n')
-    items = items.map(item => JSON.parse(item))
-
+    const content = read(filePath)
+    let items = JSON.parse(content)
+    
     if (id){
         const item = items.find(({ _id }) => _id === id)
         return item
@@ -68,33 +67,9 @@ const get = (id) => {
     return items
 }
 
-const read = (file) => {
-    try{
-        const filePath = getPath(file)
-        return fs.readFileSync(filePath, { encoding: 'utf8' })
-    }
-    catch(err){
-        console.log(chalk.bold.red('Não foi possivel encontrar o arquivo!'))
-    }
-}
-
-const hasContent = (file) => {
-    try{
-        const filePath = getPath(file)
-        const content = fs.readFileSync(filePath, { encoding: 'utf8' })
-        if(content) return true
-        else return false
-    }
-    catch(err) {
-        console.log(chalk.bold.red('Não foi possivel encontrar o arquivo!'))
-        return false
-    }
-}
-
 module.exports = { 
     create, 
     update,
     remove,
-    getPath,
     get
 }

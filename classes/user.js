@@ -1,6 +1,5 @@
-
 const user = class User {
-    constructor({ name = '', email= '', password = '', gender = '' }) {
+    constructor({ name , email , password , gender }) {
         this._id = Math.random().toString(),
         this._name = name,
         this._email = email,

@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const { toJson } = require('../util/string')
 
 const getPath = (file, bar = '/') => {
     return path.join(__dirname, bar, file)
@@ -30,9 +31,22 @@ const read = (filePath) => {
     }
 }
 
+const syncFile = (file, data) => {
+    try{
+        const str = JSON.stringify(data)
+        const content = toJson(str)
+        fs.writeFileSync(file, content)
+    }
+    catch(err){
+        console.log(chalk.bold.red('Não foi possivel sincronizar o arquivo!'))
+    }
+    
+}   
+
 module.exports = {
     getPath,
     hasFile,
     hasContent,
-    read
+    read,
+    syncFile
 }

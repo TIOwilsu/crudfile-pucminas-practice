@@ -1,30 +1,24 @@
-const fs = require('fs')
 const chalk = require('chalk')
 const file = 'users.json'
+const { getPath, hasFile, hasContent, read, syncFile } = require('../util/file')
 const filePath = getPath(file, '../')
-const { replaceAll } = require('../util/string')
-const { getPath, hasFile, hasContent, read } = require('../util/file')
 
 const create = (item) => {
     try{ 
         const validate = hasFile(filePath) && hasContent(filePath)
-        const find = /},/
-        const replace = '},\r\n'
         let items = []
         if (validate) items = get()
         items.push(item)
-        let str = JSON.stringify(items)
-        let content = replaceAll(str, find, replace)
-        fs.writeFileSync(file, content)
+        syncFile(file, items)
         console.log(chalk.bold.green('Usuário criado com sucesso!'))
     } catch (err){
-        console.log(chalk.bold.red('Ouve um problema! Não foi possivel criar um usuario.', err))
+        console.log(chalk.bold.red('Ouve um problema! Não foi possivel criar um usuario.'))
     }
 }
 
 const update = ({ _id, fields }) => {
     try{
-        let items = get()
+        const items = get()
         Object.keys(fields).forEach((fKey) => { 
             items.map((item) => {
                 Object.keys(item).forEach((iKey) => {
@@ -33,22 +27,18 @@ const update = ({ _id, fields }) => {
                 })
             }) 
         })
-        let string = items.map(item => JSON.stringify(item)).join('\r\n')
-        fs.writeFileSync(file, string)
+        syncFile(file, items)
         console.log(chalk.bold.green('Usuário atualizado com sucesso!'))
     } catch(err){
-        console.log(chalk.bold.red('Ouve um problema! Não foi possivel atualizar um usuario.'))
+        console.log(err)
     }
 }
 
 const remove = (value) => {
     try{
-        let items = get()
-        let filter = items.filter(({ _id }) => _id !== value).
-            map(item => JSON.stringify(item)).
-            join('\r\n')
-
-        fs.writeFileSync(file, filter)
+        const items = get()
+        const filter = items.filter(({ _id }) => _id !== value)
+        syncFile(file, filter)
         console.log(chalk.bold.green('Usuário removido com sucesso!'))
     } catch(err){
         console.log(chalk.bold.red('Ouve um problema! Não foi possivel remover o usuario.'))
@@ -58,7 +48,7 @@ const remove = (value) => {
 const get = (id) => {
     const content = read(filePath)
     let items = JSON.parse(content)
-    
+
     if (id){
         const item = items.find(({ _id }) => _id === id)
         return item
@@ -66,6 +56,7 @@ const get = (id) => {
     
     return items
 }
+
 
 module.exports = { 
     create, 

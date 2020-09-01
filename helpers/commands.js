@@ -1,5 +1,5 @@
-const file = require('./file')
-const User = require('./user')
+const users = require('../routes/users')
+const User = require('../classes/user')
 
 const commands = [
     {
@@ -30,7 +30,7 @@ const commands = [
         handler: ({ name, email, password, gender }) =>  {
             const params = { name, email, password, gender }
             const user  = new User(params)
-            file.create(user) 
+            users.create(user) 
         } 
     },
     {
@@ -53,7 +53,7 @@ const commands = [
                     _gender: gender
                 }
             }
-            file.update(request)
+            users.update(request)
         }
     },
     {
@@ -67,7 +67,7 @@ const commands = [
             }
         },
         handler: ({ id }) =>  {
-            file.remove(id) 
+            users.remove(id) 
         }
     },
     {
@@ -80,7 +80,7 @@ const commands = [
             }  
         },
         handler: ({ id }) =>  {
-            file.get(id) 
+            users.get(id) 
         }
     }
 ]

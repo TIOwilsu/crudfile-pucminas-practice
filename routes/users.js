@@ -8,9 +8,16 @@ const create = (item) => {
         const validate = hasFile(filePath) && hasContent(filePath)
         let items = []
         if (validate) items = get()
-        items.push(item)
-        syncFile(file, items)
-        console.log(chalk.bold.green('Usuário criado com sucesso!'))
+        const duplicate = items.find(({ _name }) => item._name === _name)
+        if(!duplicate){
+            items.push(item)
+            syncFile(file, items)
+            console.log(chalk.bold.green('Usuário criado com sucesso!'))
+        }
+        else{
+            console.log(chalk.bold.red('Já existe um usuário com este nome!'))
+        }
+        
     } catch (err){
         console.log(chalk.bold.red('Ouve um problema! Não foi possivel criar um usuario.'))
     }
